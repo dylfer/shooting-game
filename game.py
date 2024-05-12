@@ -1,4 +1,4 @@
-import pygame
+import pygame, random
 
 
 
@@ -16,19 +16,36 @@ class Bullet:
     def draw(self, screen):
         screen.blit(self.image, (self.x, self.y))
 
+class Wall:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.image = pygame.image.load('wall.png')
+        self.image = pygame.transform.scale(self.image, (40, 40))
+
+    def draw(self, screen):
+        screen.blit(self.image, (self.x, self.y))
+
+
 
 
 class Board:
+    borders = [pygame.Rect(0, 0, 800, 10), pygame.Rect(0, 0, 10, 600), pygame.Rect(0, 590, 800, 10), pygame.Rect(790, 0, 10, 600)]
+    walls = []
     def __init__(self):
-        self.width = 800
-        self.height = 600
+        self.width = 1400
+        self.height = 1000
 
     def draw(self, screen):
-        # screen.blit(self.image, (0, 0))
-        pass
-
+        for wall in self.walls:
+            screen.blit(wall.image, (wall.x, wall.y))
+        for border in self.border:
+            pygame.draw.rect(screen, (255, 255, 255), border)
+    
     def generate(self):
-        pass
+        for i in range(2):
+            for j in range(2):
+                self.walls.append(pygame.Rect(200 * i, 200 * j, 200, 200))
 
 
 
