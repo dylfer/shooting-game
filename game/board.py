@@ -4,6 +4,8 @@ import pygame, random
 
 
 class Wall:
+    width = 25
+    margin = 50
     def __init__(self, rect, marginRect, length, rotation):
         self.rect = rect
         self.marginRect = marginRect
@@ -41,49 +43,99 @@ class Board:
         # for border in self.border:
         #     pygame.draw.rect(screen, (255, 255, 255), border)
     
-    def generate(self):# convert theis to class objects and add them to the walls list
+    def generate(self,seed):# convert theis to class objects and add them to the walls list
+        random.seed(seed)
         self.walls = []
         width = 25
         margin = 50
         for i in range(3):
-            while True:#vertical
+            while True:  # vertical
                 length = random.randint(2, 4)
-                newWall = pygame.Rect(random.randint(50,1325-length*200),random.randint(50+margin,900-width-margin) , length*200, width)
-                NewWallMargin = pygame.Rect(newWall.left, newWall.top-margin, newWall.width, newWall.height+2*margin)
-                if  not any(NewWallMargin.colliderect(wall) for wall in self.walls):#i%2 == 1 or
-                    # pygame.draw.rect(screen, (255,255,255), NewWallMargin, 2)#uncomment to see wall margin collision
-                    self.walls.append(Wall(newWall, NewWallMargin,length, 1))
+                newWall = pygame.Rect(random.randint(50, 1325 - length * 200), random.randint(50 + margin, 900 - width - margin), length * 200, width)
+                newWallMargin = pygame.Rect(newWall.left, newWall.top - margin, newWall.width, newWall.height + 2 * margin)
+                if not any(newWallMargin.colliderect(wall) for wall in self.walls):  # i%2 == 1 or
+                    pygame.draw.rect(screen, (255,255,255), newWallMargin, 2)
+                    # Attach to boundary or wall
+                    for wall in self.walls:
+                        if abs(newWall.top - wall.rect.bottom) < margin:
+                            newWall.top = wall.rect.bottom
+                        elif abs(newWall.bottom - wall.rect.top) < margin:
+                            newWall.bottom = wall.rect.top
+                    if newWall.top < 50 + margin:
+                        newWall.top = 50
+                    elif newWall.bottom > 900 - margin:
+                        newWall.bottom = 900
+                    self.walls.append(Wall(newWall, newWallMargin, length, 1))
                     break
-            while True:#horizontal
+            while True:  # horizontal
                 length = random.randint(2, 4)
-                newWall = pygame.Rect(random.randint(50+margin,1325-width-margin) , random.randint(50,900-length*200) , width, length*200)
-                NewWallMargin = pygame.Rect(newWall.left-margin, newWall.top, newWall.width+2*margin, newWall.height)
-                if  not any(NewWallMargin.colliderect(wall) for wall in self.walls):#i%2 == 1 or
-                    # pygame.draw.rect(screen, (255,255,255), NewWallMargin, 2)#uncomment to see wall margin collision
-                    self.walls.append(Wall(newWall, NewWallMargin,length, 0))
+                newWall = pygame.Rect(random.randint(50 + margin, 1325 - width - margin), random.randint(50, 900 - length * 200), width, length * 200)
+                newWallMargin = pygame.Rect(newWall.left - margin, newWall.top, newWall.width + 2 * margin, newWall.height)
+                if not any(newWallMargin.colliderect(wall) for wall in self.walls):  # i%2 == 1 or
+                    pygame.draw.rect(screen, (255,255,255), newWallMargin, 2)
+                    # Attach to boundary or wall
+                    for wall in self.walls:
+                        if abs(newWall.left - wall.rect.right) < margin:
+                            newWall.left = wall.rect.right
+                        elif abs(newWall.right - wall.rect.left) < margin:
+                            newWall.right = wall.rect.left
+                    if newWall.left < 50 + margin:
+                        newWall.left = 50
+                    elif newWall.right > 1325 - margin:
+                        newWall.right = 1325
+                    self.walls.append(Wall(newWall, newWallMargin, length, 0))
                     break
+        # for i in range(3):
+        #     while True:#vertical
+        #         length = random.randint(2, 4)
+        #         newWall = pygame.Rect(random.randint(50,1325-length*200),random.randint(50+margin,900-width-margin) , length*200, width)
+        #         newWallMargin = pygame.Rect(newWall.left, newWall.top-margin, newWall.width, newWall.height+2*margin)
+        #         if  not any(newWallMargin.colliderect(wall) for wall in self.walls):#i%2 == 1 or
+        #             # pygame.draw.rect(screen, (255,255,255), newWallMargin, 2)#uncomment to see wall margin collision
+        #             self.walls.append(Wall(newWall, newWallMargin,length, 1))
+        #             break
+        #     while True:#horizontal
+        #         length = random.randint(2, 4)
+        #         newWall = pygame.Rect(random.randint(50+margin,1325-width-margin) , random.randint(50,900-length*200) , width, length*200)
+        #         newWallMargin = pygame.Rect(newWall.left-margin, newWall.top, newWall.width+2*margin, newWall.height)
+        #         if  not any(newWallMargin.colliderect(wall) for wall in self.walls):#i%2 == 1 or
+        #             # pygame.draw.rect(screen, (255,255,255), newWallMargin, 2)#uncomment to see wall margin collision
+        #             self.walls.append(Wall(newWall, newWallMargin,length, 0))
+        #             break
 
 
 
 # testing pourposes
 board = Board()
 screen = pygame.display.set_mode((1400, 1000))
-board.generate()
-board.draw(screen)
 i = 0
-# screen.fill((0,0,0))
-# board.generate()
-# board.draw(screen)
+screen.fill((0,0,0))
+board.generate(0)
+board.draw(screen)
+seeds = [0]
+i = 0
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
-    if i % 90 == 0:
-        screen.fill((0,0,0))
-        board.generate()
-        board.draw(screen)
-    i += 1
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RIGHT:
+                screen.fill((0,0,0))
+                seeds.append(random.randint(0, 1000000))
+                i += 1
+                board.generate(seeds[i])
+                board.draw(screen)
+            if event.key == pygame.K_LEFT:
+                screen.fill((0,0,0))
+                i -= 1
+                board.generate(seeds[i])
+                board.draw(screen)
+    # if i % 300 == 0:
+        # screen.fill((0,0,0))
+        # board.generate(random.randint(0, 1000000))
+        # board.draw(screen)
+    # i += 1
     pygame.display.flip()
     pygame.time.Clock().tick(30)
 
