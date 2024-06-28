@@ -6,7 +6,7 @@ from game.player import Player, Computer
 from game.objects import Bullet
 
 
-#TODO colition, map genration, sounds, enemy
+#TODO colition, map genration, sounds, enemy, bullet source, player - smooth anmate,
 
 
 
@@ -26,6 +26,18 @@ class Game:
             bullet.move()
             bullet.draw(self.screen)
         self.board.draw(self.screen)
+        gun_distance_from_center = 50  # Adjust as necessary
+        angle_in_radians = math.radians(360 - self.player.angle)
+
+        # Calculate offset based on angle
+        gun_offset_x = gun_distance_from_center * math.cos(angle_in_radians)
+        gun_offset_y = gun_distance_from_center * math.sin(angle_in_radians)
+
+        bullet_start_x = self.player.x + self.player.size[0]/2 + gun_offset_x
+        bullet_start_y = self.player.y + self.player.size[1]/2 + gun_offset_y
+
+
+        pygame.draw.circle(self.screen, (255, 0, 0), (int(bullet_start_x), int(bullet_start_y)), 5)
         pygame.display.flip()
     
     def run(self):
@@ -88,26 +100,40 @@ class Game:
                     if event.key == pygame.K_DOWN or event.key == pygame.K_s:
                         self.player.stopMove("down")
                         down.remove("down")
-                # if len(down) == 0:
-                #     self.player.move("stop")
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if self.player.magSize != 0:
-                        self.player.setShoot()
-                    else:
-                        # sound - empty mag
-                        pass
+                    if event.button == 1:
+                        if self.player.magSize != 0:
+                            self.player.setShoot()
+                        else:
+                            # sound - empty mag
+                            pass
                 if event.type == pygame.MOUSEBUTTONUP:
-                    self.player.setShoot(False)
+                    if event.button == 1:
+                        self.player.setShoot(False)
 
                 
             self.draw()
-            pygame.display.update()
             self.clock.tick(60)
 
     
     def shoot(self):
-        self.bullets.append(Bullet(self.player.x+self.player.size[0]/2, self.player.y+self.player.size[1]/2,self.player.angle))
+        gun_distance_from_center = 20  # Adjust as necessary
+        angle_in_radians = math.radians(self.player.angle)
 
+        # Calculate offset based on angle
+        gun_offset_x = gun_distance_from_center * math.cos(angle_in_radians)
+        gun_offset_y = gun_distance_from_center * math.sin(angle_in_radians)
+
+        bullet_start_x = self.player.x + self.player.size[0]/2 + gun_offset_x
+        bullet_start_y = self.player.y + self.player.size[1]/2 + gun_offset_y
+
+
+        pygame.draw.circle(self.screen, (255, 0, 0), (int(bullet_start_x), int(bullet_start_y)), 5)
+
+        if self.player.opration == "move":
+            self.bullets.append(Bullet(bullet_start_x, bullet_start_y, self.player.angle, True))
+        else:
+            self.bullets.append(Bullet(bullet_start_x, bullet_start_y, self.player.angle))
 
 
 

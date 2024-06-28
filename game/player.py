@@ -45,7 +45,7 @@ class Sprite:
 
 
 class Player(Sprite):
-    speed = 2.5
+    speed = 2.5/3
     images = {}
     images["idle"] = ["assets/player/idle/survivor-idle_rifle_",20]
     images["move"] = ["assets/player/move/survivor-move_rifle_",20]
@@ -83,7 +83,7 @@ class Player(Sprite):
             self.stage = 0
             self.secondOpration = "shoot"
         else:
-            print("no shoot")
+            # print("no shoot")
             self.secondOpration = ""
     
     def shoot(self):#image
@@ -95,7 +95,7 @@ class Player(Sprite):
         if direction not in self.directions:
             self.directions.append(direction)
         if self.opration != "reload":
-            print("move")
+            # print("move")
             self.opration = "move"
 
     def stopMove(self, direction):
@@ -112,38 +112,39 @@ class Player(Sprite):
         elif self.opration == "reload":
             self.reloadTimer -= 1
         #move or shoot
+        if self.opration == "move":
+            for direction in self.directions:
+                self.move(direction)
         if self.fram % 3 == 0:
-            if self.opration == "move":
-                for direction in self.directions:
-                    self.move(direction)
+            
             if self.secondOpration == "shoot" and self.opration != "reload":
                 if self.magSize > 0:
                     self.shoot()
                 else:
-                    print("empty mag")
+                    # print("empty mag")
                     #sound - empty mag
                     pass
         #images
         if self.opration == "idle" and self.secondOpration == "shoot":# shoot anmation
-                print(self.opration)
-                if self.stage >= self.images[self.secondOpration][1]:
-                    self.stage = 0
-                self.imageOrg = pygame.image.load(f"{self.images[self.secondOpration][0]}{self.stage}.png")  
-                x, y = pygame.mouse.get_pos()
-                if y != self.y+self.size[1]/2:
-                    (dx, dy) = (x-(self.x+self.size[0]/2), y-(self.y+self.size[1]/2))
-                    self.angle = math.atan(float(dx)/float(dy))
-                    self.angle *= 180/math.pi
-                    if dy < 0:
-                        self.angle += 180
-                elif x < self.x+self.size[0]/2:
-                    self.angle = 0
-                else:
-                    self.angle = 180
-                self.angle -= 90
-                self.imageOrg = pygame.transform.scale(self.imageOrg, self.size)
-                self.image = pygame.transform.rotate(self.imageOrg, self.angle)
-                self.displayRect = self.image.get_rect(center = self.imageOrg.get_rect(topleft = (self.x,self.y)).center)
+            # print(self.opration)
+            if self.stage >= self.images[self.secondOpration][1]:
+                self.stage = 0
+            self.imageOrg = pygame.image.load(f"{self.images[self.secondOpration][0]}{self.stage}.png")  
+            x, y = pygame.mouse.get_pos()
+            if y != self.y+self.size[1]/2:
+                (dx, dy) = (x-(self.x+self.size[0]/2), y-(self.y+self.size[1]/2))
+                self.angle = math.atan(float(dx)/float(dy))
+                self.angle *= 180/math.pi
+                if dy < 0:
+                    self.angle += 180
+            elif x < self.x+self.size[0]/2:
+                self.angle = 0
+            else:
+                self.angle = 180
+            self.angle -= 90
+            self.imageOrg = pygame.transform.scale(self.imageOrg, self.size)
+            self.image = pygame.transform.rotate(self.imageOrg, self.angle)
+            self.displayRect = self.image.get_rect(center = self.imageOrg.get_rect(topleft = (self.x,self.y)).center)
                 
 
         if self.fram % 6 == 0:# other anmations
