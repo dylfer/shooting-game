@@ -7,7 +7,7 @@ from game.objects import Bullet
 import time
 
 
-#TODO colition, map genration, sounds, enemy, bullet source, player - smooth anmate,
+#TODO colition, map genration, sounds, enemy, inprove bullet origin, player - smooth anmate,
 
 
 

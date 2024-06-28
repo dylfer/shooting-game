@@ -11,7 +11,9 @@ class Wall:
         self.marginRect = marginRect
         self.length = length
         self.rotation = rotation
+        self.mask = Wall.generate_wall_mask(self)
         self.image = pygame.image.load('assets/wall.png')
+        
         self.image = pygame.transform.scale(self.image,  (25, 200))
         if self.rotation == 1:
             self.image = pygame.transform.rotate(self.image, 90)
@@ -22,6 +24,27 @@ class Wall:
                 screen.blit(self.image, (self.rect.x, self.rect.y+i*200))
             else:
                 screen.blit(self.image, (self.rect.x+i*200, self.rect.y))
+
+
+    def generate_wall_mask(wall):
+        # Determine the size of the composite surface based on the wall's orientation and length
+        if wall.rotation == 0:  # Vertical wall
+            surface_size = (Wall.width, wall.length * 200)
+        else:  # Horizontal wall
+            surface_size = (wall.length * 200, Wall.width)
+        
+        # Create the composite surface
+        composite_surface = pygame.Surface(surface_size)
+        
+        # Blit the wall image onto the composite surface as many times as needed
+        for i in range(wall.length):
+            if wall.rotation == 0:  # Vertical wall
+                composite_surface.blit(wall.image, (0, i * 200))
+            else:  # Horizontal wall
+                composite_surface.blit(wall.image, (i * 200, 0))
+        
+        # Generate and return the mask from the composite surface
+        return pygame.mask.from_surface(composite_surface)
 
 
 

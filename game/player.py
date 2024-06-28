@@ -31,6 +31,17 @@ class Sprite:
                 self.directions = []
                 if self.opration != "reload":
                     self.opration = "idle"
+        if self.checkCollision(self.game.board.walls) == True:
+            match direction:
+                case 'left':
+                    self.x += self.speed
+                case 'right':
+                    self.x -= self.speed
+                case 'up':
+                    self.y += self.speed
+                case 'down':
+                    self.y -= self.speed
+
         # if direction != self.direction:
             # self.image = pygame.transform.rotate(self.image, 90*(self.directions.index(self.direction) - self.directions.index(direction)))
             # self.direction = direction
@@ -39,8 +50,14 @@ class Sprite:
         screen.blit(self.image, self.displayRect)   
 
 
-    def checkCollision(self, sprite):# ToDo create use mask 
-        return self.rect.colliderect(sprite.rect)
+    def checkCollision(self, walls):# TODO create use mask 
+        self.mask = pygame.mask.from_surface(self.image)
+        for wall in walls:
+            offset_x = wall.rect.x - self.displayRect.x
+            offset_y = wall.rect.y - self.displayRect.y
+            if self.mask.overlap(wall.mask, (offset_x, offset_y)) is not None:
+                return True  # Collision detected
+        return False
 
 
 
