@@ -4,6 +4,7 @@ import math
 from game.board import Board
 from game.player import Player, Computer
 from game.objects import Bullet
+import time
 
 
 #TODO colition, map genration, sounds, enemy, bullet source, player - smooth anmate,
@@ -54,6 +55,7 @@ class Game:
     def mainLoop(self):
         down = []
         while self.running:
+            # start = time.time()
             for event in pygame.event.get():
                 
                 if event.type == pygame.QUIT:
@@ -101,7 +103,11 @@ class Game:
 
                 
             self.draw()
+            # stop = time.time()
             self.clock.tick(60)
+            # end = time.time()
+            # print(stop-start, end-stop)
+            
 
     
     def shoot(self):
