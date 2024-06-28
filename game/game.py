@@ -5,22 +5,22 @@ from game.board import Board
 from game.player import Player, Computer
 
 
-
+#TODO colition, map genration, sounds, player rotation, 2 key movement to one key, enemy
 
 class Bullet:
     def __init__(self, x, y,angle):
         self.x = x
         self.y = y
-        self.speed = 8
+        self.speed = 10
         self.angle = angle
-        self.image = pygame.image.load('assets/bullet1.png').convert_alpha()
-        self.image = pygame.transform.scale(self.image, (20, 20))
+        self.image = pygame.image.load('assets/bullet2.png').convert_alpha()
+        self.image = pygame.transform.scale(self.image, (10, 6))
         self.image = pygame.transform.rotate(self.image, angle)
 
     def move(self):
         # self.y -= self.speed
-        self.x += self.speed * math.cos(math.radians(self.angle))#AI
-        self.y -= self.speed * math.sin(math.radians(self.angle))#AI
+        self.x += self.speed * math.cos(math.radians(self.angle))
+        self.y -= self.speed * math.sin(math.radians(self.angle))
 
     def draw(self, screen):
         screen.blit(self.image, (self.x, self.y))
@@ -58,7 +58,7 @@ class Game:
 
     def start(self):
         self.screen = pygame.display.set_mode((1400, 1000))
-        self.player = Player(400, 500)
+        self.player = Player(self,400, 500)
         # self.computer = Computer(400, 100)
         self.bullets = []
         self.board = Board()
@@ -93,6 +93,8 @@ class Game:
                     if event.key == pygame.K_DOWN or event.key == pygame.K_s:
                         self.player.setMove("down")
                         down.append("down")
+                    if event.key == pygame.K_r:
+                        self.player.reload()
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                         down.remove("left")
@@ -104,14 +106,23 @@ class Game:
                         down.remove("down")
                 if len(down) == 0:
                     self.player.move("stop")
-                if event.type == pygame.MOUSEBUTTONDOWN:#TODO mag check and bullet image
-                    self.bullets.append(Bullet(self.player.x+self.player.size[0]/2, self.player.y+self.player.size[1]/2,self.player.angle))
-
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.player.magSize != 0:
+                        self.player.setShoot()
+                    else:
+                        # sound - empty mag
+                        pass
+                if event.type == pygame.MOUSEBUTTONUP:
+                    self.player.setShoot(False)
 
                 
             self.draw()
             pygame.display.update()
             self.clock.tick(60)
+
+    
+    def shoot(self):
+        self.bullets.append(Bullet(self.player.x+self.player.size[0]/2, self.player.y+self.player.size[1]/2,self.player.angle))
 
 
 
