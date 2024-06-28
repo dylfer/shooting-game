@@ -36,7 +36,7 @@ class Sprite:
             # self.direction = direction
 
     def draw(self, screen):
-        screen.blit(self.image, (self.x, self.y))
+        screen.blit(self.image, self.displayRect)   
 
 
     def checkCollision(self, sprite):# ToDo create use mask 
@@ -54,8 +54,9 @@ class Player(Sprite):
     stage = 0
     magSize = 40
     size = (80,80)
+    displayRect = (0,0)
     angle = 0
-    image = pygame.image.load(f"{images["idle"][0]}{stage}.png")
+    image = pygame.image.load(f"{images['idle'][0]}{stage}.png")
     image = pygame.transform.scale(image, size)
     directions = []
     fram = 0
@@ -91,10 +92,17 @@ class Player(Sprite):
 
 
     def setMove(self, direction):
-        self.directions.append(direction)
+        if direction not in self.directions:
+            self.directions.append(direction)
         if self.opration != "reload":
             print("move")
             self.opration = "move"
+
+    def stopMove(self, direction):
+        if direction in self.directions:
+            self.directions.remove(direction)
+        if len(self.directions) == 0:
+            self.opration = "idle"
 
     def draw(self, screen):
         self.fram += 1
@@ -117,9 +125,10 @@ class Player(Sprite):
                     pass
         #images
         if self.opration == "idle" and self.secondOpration == "shoot":# shoot anmation
+                print(self.opration)
                 if self.stage >= self.images[self.secondOpration][1]:
                     self.stage = 0
-                self.image = pygame.image.load(f"{self.images[self.secondOpration][0]}{self.stage}.png")  
+                self.imageOrg = pygame.image.load(f"{self.images[self.secondOpration][0]}{self.stage}.png")  
                 x, y = pygame.mouse.get_pos()
                 if y != self.y+self.size[1]/2:
                     (dx, dy) = (x-(self.x+self.size[0]/2), y-(self.y+self.size[1]/2))
@@ -132,17 +141,17 @@ class Player(Sprite):
                 else:
                     self.angle = 180
                 self.angle -= 90
-                self.image = pygame.transform.scale(self.image, self.size)
-                self.image = pygame.transform.rotate(self.image, self.angle)
+                self.imageOrg = pygame.transform.scale(self.imageOrg, self.size)
+                self.image = pygame.transform.rotate(self.imageOrg, self.angle)
+                self.displayRect = self.image.get_rect(center = self.imageOrg.get_rect(topleft = (self.x,self.y)).center)
+                
 
         if self.fram % 6 == 0:# other anmations
-            # print(self.opration)
             self.stage += 1
             if not (self.opration == "idle" and self.secondOpration == "shoot"):
-                print("anmation")
                 if self.stage >= self.images[self.opration][1]:
                     self.stage = 0
-                self.image = pygame.image.load(f"{self.images[self.opration][0]}{self.stage}.png")  
+                self.imageOrg = pygame.image.load(f"{self.images[self.opration][0]}{self.stage}.png")  
                 
                 x, y = pygame.mouse.get_pos()
                 if y != self.y+self.size[1]/2:
@@ -156,8 +165,10 @@ class Player(Sprite):
                 else:
                     self.angle = 180
                 self.angle -= 90
-                self.image = pygame.transform.scale(self.image, self.size)
-                self.image = pygame.transform.rotate(self.image, self.angle)
+                self.imageOrg = pygame.transform.scale(self.imageOrg, self.size)
+                self.image = pygame.transform.rotate(self.imageOrg, self.angle)
+                self.displayRect = self.image.get_rect(center = self.imageOrg.get_rect(topleft = (self.x,self.y)).center)
+                # pygame.draw.rect(screen, (255,0,0), self.displayRect,  2)
         super().draw(screen)
 
 

@@ -3,29 +3,10 @@ import math
 # import random
 from game.board import Board
 from game.player import Player, Computer
+from game.objects import Bullet
 
 
-#TODO colition, map genration, sounds, player rotation, 2 key movement to one key, enemy
-
-class Bullet:
-    def __init__(self, x, y,angle):
-        self.x = x
-        self.y = y
-        self.speed = 10
-        self.angle = angle
-        self.image = pygame.image.load('assets/bullet2.png').convert_alpha()
-        self.image = pygame.transform.scale(self.image, (10, 6))
-        self.image = pygame.transform.rotate(self.image, angle)
-
-    def move(self):
-        # self.y -= self.speed
-        self.x += self.speed * math.cos(math.radians(self.angle))
-        self.y -= self.speed * math.sin(math.radians(self.angle))
-
-    def draw(self, screen):
-        screen.blit(self.image, (self.x, self.y))
-
-
+#TODO colition, map genration, sounds, enemy
 
 
 
@@ -69,7 +50,6 @@ class Game:
     #     self.mainLoop()
 
 
-    
 
     def mainLoop(self):
         down = []
@@ -97,15 +77,19 @@ class Game:
                         self.player.reload()
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+                        self.player.stopMove("left")
                         down.remove("left")
                     if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                        self.player.stopMove("right")
                         down.remove("right")
                     if event.key == pygame.K_UP or event.key == pygame.K_w:
+                        self.player.stopMove("up")
                         down.remove("up")
                     if event.key == pygame.K_DOWN or event.key == pygame.K_s:
+                        self.player.stopMove("down")
                         down.remove("down")
-                if len(down) == 0:
-                    self.player.move("stop")
+                # if len(down) == 0:
+                #     self.player.move("stop")
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if self.player.magSize != 0:
                         self.player.setShoot()
