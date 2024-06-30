@@ -11,12 +11,12 @@ class Wall:
         self.marginRect = marginRect
         self.length = length
         self.rotation = rotation
-        self.mask = Wall.generate_wall_mask(self)
         self.image = pygame.image.load('assets/wall.png')
         
         self.image = pygame.transform.scale(self.image,  (25, 200))
         if self.rotation == 1:
             self.image = pygame.transform.rotate(self.image, 90)
+        self.mask = Wall.generate_wall_mask(self)
 
     def draw(self, screen):
         for i in range(self.length):
