@@ -7,12 +7,15 @@ from game.objects import Bullet
 import time
 
 
-#TODO colition, map genration, sounds, enemy, inprove bullet origin, player - smooth anmate,
+#TODO colition, map genration, sounds, enemy, inprove bullet origin, player - smooth anmate
 
 
 
 
 class Game:
+    debuging = False
+
+
     def __init__(self):
         self.screen = pygame.display.set_mode((800, 600))
         self.running = True
@@ -28,6 +31,8 @@ class Game:
             bullet.draw(self.screen)
         self.board.draw(self.screen)
         pygame.display.flip()
+        if self.debuging:
+            self.debug()
     
     def run(self):
         pass
@@ -77,6 +82,8 @@ class Game:
                         down.append("down")
                     if event.key == pygame.K_r:
                         self.player.reload()
+                    if event.key == pygame.K_p:
+                        self.debuging = not self.debuging
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                         self.player.stopMove("left")
@@ -126,8 +133,13 @@ class Game:
             self.bullets.append(Bullet(bulletStartX, bulletStartY, self.player.angle, True))
         else:
             self.bullets.append(Bullet(bulletStartX, bulletStartY, self.player.angle))
+    
 
 
+
+
+    def debug(self):
+        print(self.player.opration,self.player.secondOpration)
 
 
 

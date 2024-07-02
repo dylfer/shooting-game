@@ -76,7 +76,7 @@ class Player(Sprite):
     image = pygame.image.load(f"{images['idle'][0]}{stage}.png")
     image = pygame.transform.scale(image, size)
     directions = []
-    fram = 0
+    frame = 0
     reloadTimer = 0
 
 
@@ -122,29 +122,12 @@ class Player(Sprite):
             self.opration = "idle"
 
     def draw(self, screen):
-        self.fram += 1
-        #reload
-        if self.reloadTimer == 0 and self.opration == "reload":
-            self.reloadAction()
-        elif self.opration == "reload":
-            self.reloadTimer -= 1
-        #move or shoot
-        if self.opration == "move":
-            for direction in self.directions:
-                self.move(direction)
-        if self.fram % 3 == 0:
-            
-            if self.secondOpration == "shoot" and self.opration != "reload":
-                if self.magSize > 0:
-                    self.shoot()
-                else:
-                    # print("empty mag")
-                    #sound - empty mag
-                    pass
-        #images
+        self.frame += 1
+        #anmation
+        # shooting every framee because a shot hapens every 3 framees and thare are 3 anmations
         if self.opration == "idle" and self.secondOpration == "shoot":# shoot anmation
             # print(self.opration)
-            if self.stage >= self.images[self.secondOpration][1]:
+            if self.stage >= self.images[self.secondOpration][1]-1:
                 self.stage = 0
             self.imageOrg = pygame.image.load(f"{self.images[self.secondOpration][0]}{self.stage}.png")  
             x, y = pygame.mouse.get_pos()
@@ -162,12 +145,14 @@ class Player(Sprite):
             self.imageOrg = pygame.transform.scale(self.imageOrg, self.size)
             self.image = pygame.transform.rotate(self.imageOrg, self.angle)
             self.displayRect = self.image.get_rect(center = self.imageOrg.get_rect(topleft = (self.x,self.y)).center)
+            self.stage += 1
+            
                 
 
-        if self.fram % 6 == 0:# other anmations
-            self.stage += 1
+        if self.frame % 6 == 0:# other anmations
+            
             if not (self.opration == "idle" and self.secondOpration == "shoot"):
-                if self.stage >= self.images[self.opration][1]:
+                if self.stage >= self.images[self.opration][1]-1:
                     self.stage = 0
                 self.imageOrg = pygame.image.load(f"{self.images[self.opration][0]}{self.stage}.png")  
                 
@@ -187,6 +172,27 @@ class Player(Sprite):
                 self.image = pygame.transform.rotate(self.imageOrg, self.angle)
                 self.displayRect = self.image.get_rect(center = self.imageOrg.get_rect(topleft = (self.x,self.y)).center)
                 # pygame.draw.rect(screen, (255,0,0), self.displayRect,  2)
+                self.stage += 1
+
+        #reload
+        if self.reloadTimer == 0 and self.opration == "reload":
+            self.reloadAction()
+        elif self.opration == "reload":
+            self.reloadTimer -= 1
+        #move or shoot
+        if self.opration == "move":
+            for direction in self.directions:
+                self.move(direction)
+        if self.frame % 3 == 0:
+            
+            if self.secondOpration == "shoot" and self.opration != "reload":
+                if self.magSize > 0:
+                    self.shoot()
+                else:
+                    # print("empty mag")
+                    #sound - empty mag
+                    pass
+        
         super().draw(screen)
 
 
