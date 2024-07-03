@@ -200,11 +200,32 @@ class Player(Sprite):
 
 
 class Computer(Sprite):
-    def __init__(self, x, y):
+    def __init__(self, x, y,level,boss):
         super().__init__(x, y)
-        self.speed = 3
+        if boss:
+            self.speed = 4*level
+            self.image = pygame.image.load('assets/boss.png')
+            self.image = pygame.transform.scale(self.image, (80, 80))
+        self.speed = 1.5*level
+        self.boss = boss
+        self.level = level
         self.image = pygame.image.load('assets/enemy.png')
         self.image = pygame.transform.scale(self.image, (40, 40))
 
+    
+
+
+
+
+
+
+
+
+
+
     def shoot(self):
+        pass
+
+
+    def draw():
         pass

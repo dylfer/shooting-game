@@ -21,7 +21,7 @@ class Bullet:
         self.image = pygame.transform.scale(self.image, (10, 6))
         self.image = pygame.transform.rotate(self.image, angle)
         self.flashImage = pygame.image.load('assets/flash.png').convert_alpha()
-        self.flashImage = pygame.transform.scale(self.flashImage, (30, 20))
+        self.flashImage = pygame.transform.scale(self.flashImage, (20, 10))
         self.flashImage = pygame.transform.rotate(self.flashImage, angle)
 
     def move(self):
@@ -32,12 +32,12 @@ class Bullet:
         
         if self.frame < 20:
             self.frame += 1
-            centerOffset = 20
-            angle_in_radians = math.radians(360+self.angle)
-            gun_offset_x = centerOffset * math.cos(angle_in_radians)
-            gun_offset_y = centerOffset * math.sin(angle_in_radians)
+            # centerOffset = 20
+            # angle_in_radians = math.radians(180+self.angle)
+            # gun_offset_x = centerOffset * math.cos(angle_in_radians)
+            # gun_offset_y = centerOffset * math.sin(angle_in_radians)
 
-            StartX = self.origin[0] + gun_offset_x
-            StartY = self.origin[1] + gun_offset_y
-            screen.blit(self.flashImage, (StartX,StartY)) 
+            # self.StartX = self.origin[0] + gun_offset_x
+            # self.StartY = self.origin[1] + gun_offset_y
+            screen.blit(self.flashImage, self.origin)#(self.StartX,self.StartY)) 
         screen.blit(self.image, (self.x, self.y))
